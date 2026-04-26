@@ -39,5 +39,6 @@ A special thanks to the team behind this project:
 | [<img src="https://github.com/svilia.png?size=100" width=100><br><sub>**svilia**</sub>](https://github.com/svilia) | [<img src="https://github.com/wortex213433.png?size=100" width=100><br><sub>**wortex213433**</sub>](https://github.com/wortex213433) |
 | :---: | :---: |
 ---
-**Developed by:** [Emir Svilia](https://github.com/svilia)  
+**Developed by:** [Emir Svilia - 
+wortex213433](https://github.com/svilia)  
 *For educational and security research purposes only.*
