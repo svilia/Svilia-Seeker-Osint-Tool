@@ -1,44 +1,190 @@
-# 🔍 Svilia Seeker - Web-Based OSINT Tool
+```
+███████╗██╗   ██╗██╗██╗     ██╗ █████╗     ███████╗███████╗███████╗██╗  ██╗███████╗██████╗ 
+██╔════╝██║   ██║██║██║     ██║██╔══██╗    ██╔════╝██╔════╝██╔════╝██║ ██╔╝██╔════╝██╔══██╗
+███████╗██║   ██║██║██║     ██║███████║    ███████╗█████╗  █████╗  █████╔╝ █████╗  ██████╔╝
+╚════██║╚██╗ ██╔╝██║██║     ██║██╔══██║    ╚════██║██╔══╝  ██╔══╝  ██╔═██╗ ██╔══╝  ██╔══██╗
+███████║ ╚████╔╝ ██║███████╗██║██║  ██║    ███████║███████╗███████╗██║  ██╗███████╗██║  ██║ 
+╚══════╝  ╚═══╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝    ╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+                         W E B - B A S E D   O S I N T   T O O L
+```
 
-**Svilia Seeker** is a lightweight, web-based Open Source Intelligence (OSINT) tool designed to search for a specific username across various social media platforms and websites in seconds.
+<div align="center">
+
+![Version](https://img.shields.io/badge/version-1.0.0-00ffe1?style=for-the-badge&labelColor=0a1520)
+![License](https://img.shields.io/badge/license-MIT-00a8ff?style=for-the-badge&labelColor=0a1520)
+![HTML](https://img.shields.io/badge/built%20with-HTML%2FJS-ff3c5a?style=for-the-badge&labelColor=0a1520)
+![Platforms](https://img.shields.io/badge/platforms-40%2B-00ff88?style=for-the-badge&labelColor=0a1520)
+![Purpose](https://img.shields.io/badge/purpose-OSINT-ffb800?style=for-the-badge&labelColor=0a1520)
+
+**A lightweight, web-based username reconnaissance tool — no installation required.**  
+Scan 40+ platforms instantly from your browser.
+
+</div>
+
+---
+
+## 🎯 About
+
+**Svilia Seeker** is a fast, browser-based OSINT tool that searches for a target username across social media platforms, developer communities, gaming networks, forums, and more — all in one place.
+
+> 💡 Inspired by [Sherlock](https://github.com/sherlock-project/sherlock), rebuilt as a zero-dependency web app with a hacker-aesthetic terminal UI.
+
+```
+┌──────────────────────────────────────────────────┐
+│  🌐 40+ Platforms  │  ⚡ No Install  │  🔍 OSINT  │
+│  🎯 5 Categories   │  📊 Live Stats  │  🖥️ Web UI  │
+└──────────────────────────────────────────────────┘
+```
 
 ---
 
 ## 🚀 Features
-- **No Installation Required:** Just open the `index.html` file in your browser.
-- **Fast Scanning:** JavaScript-based logic for quick results.
-- **Minimalist Design:** Clean and user-friendly interface.
-- **Sherlock-Inspired:** Efficiently checks for account existence on popular platforms.
+
+| Feature | Description |
+|---|---|
+| ⚡ **Instant Scan** | JavaScript-based async scanning across 40+ platforms |
+| 🧩 **Category Filter** | Filter by Social / Dev / Media / Forum / Gaming |
+| 📊 **Live Stats** | Real-time Found / Not Found / Checking counters |
+| 🖥️ **Terminal Log** | Timestamped hacker-style scan output |
+| 🔗 **Direct Links** | Found profiles open directly in new tab |
+| 📦 **Zero Install** | Just open `index.html` — no server, no deps |
+| 🎨 **Hacker UI** | Dark terminal aesthetic, ASCII art, neon accents |
+
+---
 
 ## 🛠️ How to Use
-1. Download this repository or copy the `index.html` file.
-2. Open the file in any modern web browser (Chrome, Brave, Firefox, etc.).
-3. Enter the username you want to search and hit the "Search" button.
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/svilia/Svilia-Seeker-Osint-Tool.git
+
+# 2. Open in browser
+cd Svilia-Seeker-Osint-Tool
+open index.html     # macOS
+xdg-open index.html # Linux
+# or just double-click index.html on Windows
+```
+
+> No Python, no Node, no dependencies. Just a browser.
 
 ---
 
-## ⚠️ Important Note (CORS)
-Due to browser security policies (**CORS**), direct requests to some platforms may be blocked. To ensure full functionality, it is recommended to use a **CORS Unblock** browser extension or a proxy service.
+## 🌐 Supported Platforms
+
+<details>
+<summary><b>📱 Social (9)</b></summary>
+
+Twitter/X • Instagram • Facebook • LinkedIn • TikTok • Snapchat • Pinterest • Tumblr • Mastodon
+
+</details>
+
+<details>
+<summary><b>💻 Dev (8)</b></summary>
+
+GitHub • GitLab • Bitbucket • Dev.to • CodePen • HackerNews • Stack Overflow • Replit • Kaggle
+
+</details>
+
+<details>
+<summary><b>🎬 Media (8)</b></summary>
+
+YouTube • Twitch • Vimeo • Dailymotion • SoundCloud • Spotify • Bandcamp • Behance • Dribbble
+
+</details>
+
+<details>
+<summary><b>💬 Forum (7)</b></summary>
+
+Reddit • Quora • Medium • Discord • Telegram • Keybase • Pastebin
+
+</details>
+
+<details>
+<summary><b>🎮 Gaming (5)</b></summary>
+
+Steam • Xbox • PSN • Roblox • Minecraft (NameMC)
+
+</details>
+
+---
+
+## ⚠️ CORS Notice
+
+> Due to browser security policies (CORS), direct HTTP requests to external platforms may be blocked. For live checking, use a **CORS Unblock** browser extension or route through a proxy.
+
+---
+
+## 📸 Preview
+
+```
+████████████████████████████████████████████
+  SVILIA SEEKER v1.0.0 — INITIALIZING
+████████████████████████████████████████████
+
+  [*] Target     : john_doe
+  [*] Platforms  : 40
+  [*] Categories : ALL
+
+  [SCAN] Starting async sweep...
+  [FOUND] GitHub      → https://github.com/john_doe
+  [FOUND] Twitter/X   → https://twitter.com/john_doe
+  [FOUND] Reddit      → https://reddit.com/user/john_doe
+  [FOUND] Steam       → https://steamcommunity.com/id/john_doe
+  [N/A  ] Facebook    → not found
+  ...
+
+  [*] Scan complete
+  [*] 24 found | 16 not found | 40 total
+```
+
+---
+
+## 👥 Contributors
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/svilia">
+        <img src="https://github.com/svilia.png" width="100px" style="border-radius:50%" alt="svilia"/><br/>
+        <sub><b>svilia</b></sub>
+      </a><br/>
+      <sub>⚡ Project Lead & Creator</sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/wortex213433">
+        <img src="https://github.com/wortex213433.png" width="100px" style="border-radius:50%" alt="wortex213433"/><br/>
+        <sub><b>wortex213433</b></sub>
+      </a><br/>
+      <sub>🔧 Core Contributor</sub>
+    </td>
+  </tr>
+</table>
+
+---
 
 ## 📜 License
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
-## 💻 Built With
-The entire project is built using:
-
-![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
+```
+MIT License — Free to use, modify, and distribute.
+See LICENSE for full details.
+```
 
 ---
 
-## 🤝 Contributors
+## ⚠️ Legal Disclaimer
 
-A special thanks to the team behind this project:
+> **FOR EDUCATIONAL AND AUTHORIZED USE ONLY.**  
+> Svilia Seeker is provided for security research and educational purposes only.  
+> Unauthorized reconnaissance of individuals without consent may violate privacy laws.  
+> The developers assume no liability for misuse. **Use responsibly. Recon ethically.**
 
-| [<img src="https://github.com/svilia.png?size=100" width=100><br><sub>**svilia**</sub>](https://github.com/svilia) | [<img src="https://github.com/wortex213433.png?size=100" width=100><br><sub>**wortex213433**</sub>](https://github.com/wortex213433) |
-| :---: | :---: |
 ---
-**Developed by:** [Emir Svilia - 
-wortex213433](https://github.com/svilia)  
-*For educational and security research purposes only.*
+
+<div align="center">
+
+**© 2024 svilia • MIT License • Made with ❤️ for the security community**
+
+[![GitHub](https://img.shields.io/badge/github-svilia-00ffe1?style=flat-square&logo=github&labelColor=0a1520)](https://github.com/svilia)
+[![GitHub](https://img.shields.io/badge/github-wortex213433-00a8ff?style=flat-square&logo=github&labelColor=0a1520)](https://github.com/wortex213433)
+
+</div>
