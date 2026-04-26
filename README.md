@@ -22,5 +22,5 @@ Due to browser security policies (**CORS**), direct requests to some platforms m
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ---
-**Developed by:** [Mehmet Emir](https://github.com/svilia)  
+**Developed by:** [Emir Svilia](https://github.com/svilia)  
 *For educational and security research purposes only.*
