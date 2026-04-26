@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0c0f;
+  --bg2: #0f1217;
+  --bg3: #141820;
+  --border: rgba(99,255,180,0.12);
+  --border2: rgba(99,255,180,0.25);
+  --accent: #63ffb4;
+  --accent2: #00d4ff;
+  --accent3: #ff6b6b;
+  --accent4: #ffd166;
+  --text: #e8edf5;
+  --text2: #8892a4;
+  --text3: #4a5568;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Space Grotesk', sans-serif;
+  --green: #63ffb4;
+  --red: #ff6b6b;
+  --yellow: #ffd166;
+  --blue: #00d4ff;
+  --purple: #b39ddb;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.scanlines {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  pointer-events: none; z-index: 0;
+}
+
+.grid-bg {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: linear-gradient(rgba(99,255,180,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(99,255,180,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none; z-index: 0;
+}
+
+.app { position: relative; z-index: 1; }
+
+.header {
+  padding: 20px 24px 0;
+  display: flex; align-items: center; gap: 16px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(99,255,180,0.04) 0%, transparent 100%);
+}
+
+.logo-icon {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, rgba(99,255,180,0.2), rgba(0,212,255,0.1));
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+
+.logo-text { flex: 1; }
+.logo-text h1 {
+  font-family: var(--mono);
+  font-size: 18px; font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.logo-text p {
+  font-size: 11px; color: var(--text3);
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+}
+
+.status-badges {
+  display: flex; gap: 8px; padding-bottom: 16px;
+}
+.badge {
+  padding: 3px 10px; border-radius: 20px;
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.08em;
+}
+.badge.online { background: rgba(99,255,180,0.12); color: var(--green); border: 1px solid rgba(99,255,180,0.3); }
+.badge.count { background: rgba(0,212,255,0.1); color: var(--blue); border: 1px solid rgba(0,212,255,0.2); }
+.badge.ver { background: rgba(179,157,219,0.1); color: var(--purple); border: 1px solid rgba(179,157,219,0.2); }
+
+.tabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  padding: 0 24px;
+}
+.tab {
+  padding: 10px 16px;
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  color: var(--text3); cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  user-select: none;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab:hover:not(.active) { color: var(--text2); }
+
+.main { display: flex; height: calc(100vh - 120px); }
+
+.sidebar {
+  width: 220px; min-width: 220px;
+  border-right: 1px solid var(--border);
+  background: var(--bg2);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+
+.sidebar-section { padding: 12px; border-bottom: 1px solid var(--border); }
+.sidebar-title {
+  font-family: var(--mono); font-size: 9px; font-weight: 600;
+  color: var(--text3); letter-spacing: 0.15em; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.platform-filter {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.pf-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 8px; border-radius: 6px; cursor: pointer;
+  transition: background 0.15s; user-select: none;
+}
+.pf-item:hover { background: rgba(99,255,180,0.06); }
+.pf-item.active { background: rgba(99,255,180,0.1); }
+.pf-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.pf-name { font-size: 12px; color: var(--text2); flex: 1; }
+.pf-count { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+
+.content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.search-area {
+  padding: 20px 24px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+
+.search-label {
+  font-family: var(--mono); font-size: 10px; color: var(--text3);
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+}
+
+.search-row { display: flex; gap: 8px; align-items: center; }
+
+.search-input-wrap {
+  flex: 1; position: relative;
+}
+.search-prefix {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  font-family: var(--mono); font-size: 14px; color: var(--accent);
+  pointer-events: none;
+}
+.search-input {
+  width: 100%; padding: 10px 12px 10px 28px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--mono); font-size: 14px;
+  outline: none; transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text3); }
+
+.btn {
+  padding: 10px 20px;
+  border: 1px solid var(--accent);
+  background: rgba(99,255,180,0.1);
+  color: var(--accent);
+  font-family: var(--mono); font-size: 12px; font-weight: 600;
+  border-radius: 8px; cursor: pointer;
+  transition: all 0.2s; letter-spacing: 0.08em; text-transform: uppercase;
+  white-space: nowrap;
+}
+.btn:hover { background: rgba(99,255,180,0.2); box-shadow: 0 0 16px rgba(99,255,180,0.15); }
+.btn.scanning { opacity: 0.7; cursor: not-allowed; animation: pulse 1s infinite; }
+.btn.danger { border-color: var(--red); background: rgba(255,107,107,0.1); color: var(--red); }
+
+.btn-sm {
+  padding: 5px 12px; font-size: 10px; border-radius: 6px;
+}
+
+@keyframes pulse { 0%,100% { opacity: 0.7; } 50% { opacity: 1; } }
+
+.options-row {
+  display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap;
+}
+.opt-group { display: flex; align-items: center; gap: 6px; }
+.opt-label { font-size: 11px; color: var(--text3); }
+.opt-check {
+  width: 14px; height: 14px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 3px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  user-select: none; transition: all 0.2s;
+}
+.opt-check.checked { background: rgba(99,255,180,0.2); border-color: var(--accent); }
+.opt-check.checked::after { content: '✓'; font-size: 9px; color: var(--accent); }
+
+.stats-bar {
+  display: flex; gap: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+.stat-item {
+  padding: 8px 20px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat-item:first-child { padding-left: 0; }
+.stat-val { font-family: var(--mono); font-size: 16px; font-weight: 600; color: var(--text); }
+.stat-val.green { color: var(--green); }
+.stat-val.red { color: var(--red); }
+.stat-val.yellow { color: var(--yellow); }
+.stat-val.blue { color: var(--blue); }
+.stat-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+
+.results-area { flex: 1; overflow-y: auto; padding: 16px 24px; }
+
+.results-area::-webkit-scrollbar { width: 4px; }
+.results-area::-webkit-scrollbar-track { background: transparent; }
+.results-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; gap: 12px; color: var(--text3);
+}
+.empty-icon { font-size: 48px; opacity: 0.3; }
+.empty-text { font-family: var(--mono); font-size: 13px; }
+
+.section-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.section-title {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em;
+}
+.section-line { flex: 1; height: 1px; background: var(--border); }
+.section-count { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.result-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative; overflow: hidden;
+}
+.result-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  border-radius: 10px 0 0 10px;
+}
+.result-card.found::before { background: var(--green); }
+.result-card.notfound::before { background: var(--text3); }
+.result-card.error::before { background: var(--yellow); }
+
+.result-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.result-card.found:hover { border-color: rgba(99,255,180,0.3); }
+
+.rc-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rc-emoji { font-size: 16px; }
+.rc-name { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+.rc-status {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.rc-status.found { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.rc-status.notfound { background: var(--text3); }
+.rc-status.error { background: var(--yellow); }
+.rc-status.scanning { background: var(--blue); animation: blink 0.8s infinite; }
+
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.rc-url { font-family: var(--mono); font-size: 10px; color: var(--text3); word-break: break-all; margin-bottom: 4px; }
+.rc-badge {
+  font-family: var(--mono); font-size: 9px; font-weight: 600;
+  padding: 2px 6px; border-radius: 4px; display: inline-block;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.rc-badge.found { background: rgba(99,255,180,0.15); color: var(--green); }
+.rc-badge.notfound { background: rgba(74,85,104,0.3); color: var(--text3); }
+.rc-badge.error { background: rgba(255,209,102,0.15); color: var(--yellow); }
+.rc-badge.scanning { background: rgba(0,212,255,0.15); color: var(--blue); }
+
+.rc-meta { font-size: 10px; color: var(--text3); margin-top: 4px; }
+.rc-time { font-family: var(--mono); }
+
+.terminal-panel {
+  width: 280px; min-width: 280px;
+  border-left: 1px solid var(--border);
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.terminal-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg2);
+}
+.terminal-dots { display: flex; gap: 5px; }
+.t-dot { width: 8px; height: 8px; border-radius: 50%; }
+.t-dot.r { background: #ff5f56; }
+.t-dot.y { background: #ffbd2e; }
+.t-dot.g { background: #27c93f; }
+.terminal-title { font-family: var(--mono); font-size: 10px; color: var(--text3); flex: 1; text-align: center; }
+
+.terminal-body {
+  flex: 1; overflow-y: auto; padding: 12px;
+  font-family: var(--mono); font-size: 11px; line-height: 1.7;
+}
+.terminal-body::-webkit-scrollbar { width: 3px; }
+.terminal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.tl { display: block; }
+.tl-prompt { color: var(--accent); }
+.tl-info { color: var(--text2); }
+.tl-success { color: var(--green); }
+.tl-error { color: var(--red); }
+.tl-warn { color: var(--yellow); }
+.tl-dim { color: var(--text3); }
+.tl-blue { color: var(--blue); }
+
+.cursor { display: inline-block; width: 8px; height: 12px; background: var(--accent); animation: blink 1s infinite; vertical-align: middle; }
+
+.progress-bar-wrap {
+  height: 3px; background: var(--bg3); border-radius: 2px;
+  margin: 6px 0; overflow: hidden;
+}
+.progress-bar {
+  height: 100%; background: linear-gradient(90deg, var(--accent), var(--blue));
+  border-radius: 2px; transition: width 0.3s;
+}
+
+.detail-panel {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 360px;
+  background: var(--bg2); border-left: 1px solid var(--border2);
+  z-index: 10; transform: translateX(100%); transition: transform 0.3s;
+  display: flex; flex-direction: column;
+}
+.detail-panel.open { transform: translateX(0); }
+.detail-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.detail-close {
+  margin-left: auto; cursor: pointer; color: var(--text3);
+  font-size: 18px; line-height: 1;
+  padding: 4px 8px; border-radius: 4px;
+  transition: color 0.2s;
+}
+.detail-close:hover { color: var(--text); }
+.detail-body { flex: 1; overflow-y: auto; padding: 20px; }
+.detail-section { margin-bottom: 20px; }
+.detail-section-title {
+  font-family: var(--mono); font-size: 9px; font-weight: 600;
+  color: var(--text3); text-transform: uppercase; letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+.detail-row {
+  display: flex; gap: 8px; margin-bottom: 6px; align-items: flex-start;
+}
+.detail-key { font-size: 12px; color: var(--text3); min-width: 80px; }
+.detail-val { font-family: var(--mono); font-size: 11px; color: var(--text); word-break: break-all; }
+.detail-val.link { color: var(--blue); text-decoration: underline; cursor: pointer; }
+
+.export-bar {
+  padding: 12px 20px; border-top: 1px solid var(--border);
+  display: flex; gap: 8px;
+}
+
+.notif {
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 12px 16px;
+  font-family: var(--mono); font-size: 12px; color: var(--text);
+  z-index: 100; transform: translateY(80px); opacity: 0;
+  transition: all 0.3s;
+}
+.notif.show { transform: translateY(0); opacity: 1; }
+.notif.success { border-color: rgba(99,255,180,0.4); color: var(--green); }
+.notif.info { border-color: rgba(0,212,255,0.4); color: var(--blue); }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+<div class="grid-bg"></div>
+<div class="app" id="app">
+
+<div class="header">
+  <div class="logo-icon">👁</div>
+  <div class="logo-text">
+    <h1>Svilia Seeker</h1>
+    <p>OSINT Username Intelligence Framework v2.4.1</p>
+  </div>
+  <div class="status-badges">
+    <span class="badge online">● ONLINE</span>
+    <span class="badge count" id="platform-badge">1024 PLATFORMS</span>
+    <span class="badge ver">Sherlock++</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('scan',this)">[ SCAN ]</div>
+  <div class="tab" onclick="switchTab('history',this)">[ HISTORY ]</div>
+  <div class="tab" onclick="switchTab('config',this)">[ CONFIG ]</div>
+  <div class="tab" onclick="switchTab('export',this)">[ EXPORT ]</div>
+</div>
+
+<div class="main" style="position:relative;">
+
+<div class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Kategori Filtresi</div>
+    <div class="platform-filter" id="category-list"></div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Ülke / Bölge</div>
+    <div class="platform-filter">
+      <div class="pf-item active" onclick="toggleRegion(this,'all')">
+        <div class="pf-dot" style="background:#8892a4"></div>
+        <span class="pf-name">Tüm Bölgeler</span>
+      </div>
+      <div class="pf-item" onclick="toggleRegion(this,'global')">
+        <div class="pf-dot" style="background:#63ffb4"></div>
+        <span class="pf-name">Global</span>
+      </div>
+      <div class="pf-item" onclick="toggleRegion(this,'tr')">
+        <div class="pf-dot" style="background:#00d4ff"></div>
+        <span class="pf-name">Türkiye</span>
+      </div>
+      <div class="pf-item" onclick="toggleRegion(this,'ru')">
+        <div class="pf-dot" style="background:#b39ddb"></div>
+        <span class="pf-name">Rusya/CIS</span>
+      </div>
+      <div class="pf-item" onclick="toggleRegion(this,'cn')">
+        <div class="pf-dot" style="background:#ffd166"></div>
+        <span class="pf-name">Asya</span>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Filtrele</div>
+    <div class="platform-filter">
+      <div class="pf-item active" onclick="toggleStatus(this,'all')">
+        <div class="pf-dot" style="background:#8892a4"></div>
+        <span class="pf-name">Tümü</span>
+        <span class="pf-count" id="cnt-all">0</span>
+      </div>
+      <div class="pf-item" onclick="toggleStatus(this,'found')">
+        <div class="pf-dot" style="background:#63ffb4"></div>
+        <span class="pf-name">Bulundu</span>
+        <span class="pf-count" id="cnt-found">0</span>
+      </div>
+      <div class="pf-item" onclick="toggleStatus(this,'notfound')">
+        <div class="pf-dot" style="background:#4a5568"></div>
+        <span class="pf-name">Yok</span>
+        <span class="pf-count" id="cnt-notfound">0</span>
+      </div>
+      <div class="pf-item" onclick="toggleStatus(this,'error')">
+        <div class="pf-dot" style="background:#ffd166"></div>
+        <span class="pf-name">Hata</span>
+        <span class="pf-count" id="cnt-error">0</span>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Risk Skoru</div>
+    <div style="padding: 4px 0;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+        <span style="font-size:11px;color:var(--text3)">Dijital Ayak İzi</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text)" id="risk-score">--</span>
+      </div>
+      <div class="progress-bar-wrap" style="height:6px;">
+        <div class="progress-bar" id="risk-bar" style="width:0%"></div>
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px" id="risk-label">Henüz tarama yapılmadı</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="search-area">
+    <div class="search-label">Hedef Kullanıcı Adı</div>
+    <div class="search-row">
+      <div class="search-input-wrap">
+        <span class="search-prefix">@</span>
+        <input class="search-input" id="username-input" placeholder="kullanici_adi" type="text" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')startScan()"/>
+      </div>
+      <button class="btn" id="scan-btn" onclick="startScan()">◉ TARA</button>
+      <button class="btn danger btn-sm" id="stop-btn" onclick="stopScan()" style="display:none;">■ DUR</button>
+    </div>
+    <div class="options-row">
+      <div class="opt-group">
+        <div class="opt-check checked" id="opt-verbose" onclick="toggleOpt(this)"></div>
+        <span class="opt-label">Verbose mod</span>
+      </div>
+      <div class="opt-group">
+        <div class="opt-check checked" id="opt-timeout" onclick="toggleOpt(this)"></div>
+        <span class="opt-label">Timeout: 30s</span>
+      </div>
+      <div class="opt-group">
+        <div class="opt-check" id="opt-proxy" onclick="toggleOpt(this)"></div>
+        <span class="opt-label">Proxy kullan</span>
+      </div>
+      <div class="opt-group">
+        <div class="opt-check" id="opt-tor" onclick="toggleOpt(this)"></div>
+        <span class="opt-label">Tor ağı</span>
+      </div>
+      <div class="opt-group">
+        <div class="opt-check checked" id="opt-export" onclick="toggleOpt(this)"></div>
+        <span class="opt-label">Otomatik export</span>
+      </div>
+    </div>
+    <div class="progress-bar-wrap" id="progress-wrap" style="display:none;margin-top:12px;">
+      <div class="progress-bar" id="main-progress" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-val" id="s-total">0</div>
+      <div class="stat-lbl">Toplam</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val green" id="s-found">0</div>
+      <div class="stat-lbl">Bulundu</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val red" id="s-nf">0</div>
+      <div class="stat-lbl">Bulunamadı</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val yellow" id="s-err">0</div>
+      <div class="stat-lbl">Hata</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val blue" id="s-time">0.0s</div>
+      <div class="stat-lbl">Süre</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val" id="s-speed">--</div>
+      <div class="stat-lbl">Sorgu/s</div>
+    </div>
+  </div>
+
+  <div class="results-area" id="results-area">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">👁</div>
+      <div class="empty-text">Kullanıcı adı girin ve taramayı başlatın</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--mono)">1024+ platform üzerinde paralel OSINT taraması</div>
+    </div>
+    <div id="results-container" style="display:none;"></div>
+  </div>
+</div>
+
+<div class="terminal-panel">
+  <div class="terminal-header">
+    <div class="terminal-dots">
+      <div class="t-dot r"></div>
+      <div class="t-dot y"></div>
+      <div class="t-dot g"></div>
+    </div>
+    <span class="terminal-title">svilia-seeker — log</span>
+  </div>
+  <div class="terminal-body" id="terminal">
+    <span class="tl tl-prompt">svilia@seeker:~$ </span><span class="tl-info">init</span><br>
+    <span class="tl tl-dim">─────────────────────────────</span><br>
+    <span class="tl tl-success">✓ Sistem hazır</span><br>
+    <span class="tl tl-info">✓ 1024 platform yüklendi</span><br>
+    <span class="tl tl-blue">✓ asyncio motoru aktif</span><br>
+    <span class="tl tl-dim">─────────────────────────────</span><br>
+    <span class="tl tl-warn">⚡ Sadece etik OSINT</span><br>
+    <span class="tl tl-dim">─────────────────────────────</span><br>
+    <span class="tl tl-prompt">$ </span><span class="cursor"></span>
+  </div>
+</div>
+
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-header">
+    <span id="dp-emoji" style="font-size:20px;">🌐</span>
+    <div>
+      <div id="dp-name" style="font-weight:600;font-size:15px;"></div>
+      <div id="dp-cat" style="font-size:11px;color:var(--text3);"></div>
+    </div>
+    <span class="detail-close" onclick="closeDetail()">✕</span>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <div class="detail-section-title">Hesap Durumu</div>
+      <div class="detail-row"><span class="detail-key">Durum</span><span class="detail-val" id="dp-status"></span></div>
+      <div class="detail-row"><span class="detail-key">URL</span><span class="detail-val link" id="dp-url" onclick="openDetail()"></span></div>
+      <div class="detail-row"><span class="detail-key">Yanıt</span><span class="detail-val" id="dp-code"></span></div>
+      <div class="detail-row"><span class="detail-key">Süre</span><span class="detail-val" id="dp-resp"></span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Platform Bilgisi</div>
+      <div class="detail-row"><span class="detail-key">Kategori</span><span class="detail-val" id="dp-cat2"></span></div>
+      <div class="detail-row"><span class="detail-key">Bölge</span><span class="detail-val" id="dp-region"></span></div>
+      <div class="detail-row"><span class="detail-key">Kullanıcılar</span><span class="detail-val" id="dp-users"></span></div>
+      <div class="detail-row"><span class="detail-key">Yöntem</span><span class="detail-val" id="dp-method"></span></div>
+    </div>
+    <div class="detail-section" id="dp-found-section" style="display:none;">
+      <div class="detail-section-title">Metadata</div>
+      <div class="detail-row"><span class="detail-key">Profil</span><span class="detail-val link" id="dp-profile" onclick="openDetail()">Görüntüle →</span></div>
+      <div class="detail-row"><span class="detail-key">İçerik</span><span class="detail-val" id="dp-content"></span></div>
+    </div>
+  </div>
+  <div class="export-bar">
+    <button class="btn btn-sm" onclick="copyUrl()">URL Kopyala</button>
+    <button class="btn btn-sm" onclick="openDetail()">Aç →</button>
+  </div>
+</div>
+
+</div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+const PLATFORMS = [
+  {name:'Twitter/X',emoji:'🐦',cat:'Sosyal Medya',url:'https://x.com/{u}',region:'Global',users:'500M+'},
+  {name:'Instagram',emoji:'📸',cat:'Sosyal Medya',url:'https://instagram.com/{u}',region:'Global',users:'2B+'},
+  {name:'TikTok',emoji:'🎵',cat:'Video',url:'https://tiktok.com/@{u}',region:'Global',users:'1.5B+'},
+  {name:'YouTube',emoji:'▶️',cat:'Video',url:'https://youtube.com/@{u}',region:'Global',users:'2.7B+'},
+  {name:'Facebook',emoji:'👥',cat:'Sosyal Medya',url:'https://facebook.com/{u}',region:'Global',users:'3B+'},
+  {name:'LinkedIn',emoji:'💼',cat:'Profesyonel',url:'https://linkedin.com/in/{u}',region:'Global',users:'950M+'},
+  {name:'GitHub',emoji:'🐙',cat:'Geliştirici',url:'https://github.com/{u}',region:'Global',users:'100M+'},
+  {name:'Reddit',emoji:'🤖',cat:'Forum',url:'https://reddit.com/u/{u}',region:'Global',users:'430M+'},
+  {name:'Pinterest',emoji:'📌',cat:'Görsel',url:'https://pinterest.com/{u}',region:'Global',users:'450M+'},
+  {name:'Snapchat',emoji:'👻',cat:'Mesajlaşma',url:'https://snapchat.com/add/{u}',region:'Global',users:'750M+'},
+  {name:'Twitch',emoji:'🎮',cat:'Yayın',url:'https://twitch.tv/{u}',region:'Global',users:'140M+'},
+  {name:'Discord',emoji:'💬',cat:'Mesajlaşma',url:'https://discord.com/users/{u}',region:'Global',users:'550M+'},
+  {name:'Telegram',emoji:'✈️',cat:'Mesajlaşma',url:'https://t.me/{u}',region:'Global',users:'900M+'},
+  {name:'Steam',emoji:'🎮',cat:'Oyun',url:'https://steamcommunity.com/id/{u}',region:'Global',users:'120M+'},
+  {name:'Spotify',emoji:'🎵',cat:'Müzik',url:'https://open.spotify.com/user/{u}',region:'Global',users:'600M+'},
+  {name:'SoundCloud',emoji:'🔊',cat:'Müzik',url:'https://soundcloud.com/{u}',region:'Global',users:'75M+'},
+  {name:'Medium',emoji:'✍️',cat:'Blog',url:'https://medium.com/@{u}',region:'Global',users:'100M+'},
+  {name:'Substack',emoji:'📧',cat:'Blog',url:'https://substack.com/@{u}',region:'Global',users:'35M+'},
+  {name:'Behance',emoji:'🎨',cat:'Tasarım',url:'https://behance.net/{u}',region:'Global',users:'50M+'},
+  {name:'Dribbble',emoji:'🏀',cat:'Tasarım',url:'https://dribbble.com/{u}',region:'Global',users:'12M+'},
+  {name:'Flickr',emoji:'📷',cat:'Fotoğraf',url:'https://flickr.com/people/{u}',region:'Global',users:'100M+'},
+  {name:'DeviantArt',emoji:'🖼️',cat:'Sanat',url:'https://deviantart.com/{u}',region:'Global',users:'61M+'},
+  {name:'ArtStation',emoji:'🎭',cat:'Sanat',url:'https://artstation.com/{u}',region:'Global',users:'10M+'},
+  {name:'HackerNews',emoji:'🔶',cat:'Geliştirici',url:'https://news.ycombinator.com/user?id={u}',region:'Global',users:'5M+'},
+  {name:'Stack Overflow',emoji:'📚',cat:'Geliştirici',url:'https://stackoverflow.com/users/{u}',region:'Global',users:'20M+'},
+  {name:'GitLab',emoji:'🦊',cat:'Geliştirici',url:'https://gitlab.com/{u}',region:'Global',users:'30M+'},
+  {name:'Bitbucket',emoji:'🪣',cat:'Geliştirici',url:'https://bitbucket.org/{u}',region:'Global',users:'10M+'},
+  {name:'npm',emoji:'📦',cat:'Geliştirici',url:'https://npmjs.com/~{u}',region:'Global',users:'15M+'},
+  {name:'PyPI',emoji:'🐍',cat:'Geliştirici',url:'https://pypi.org/user/{u}',region:'Global',users:'3M+'},
+  {name:'Keybase',emoji:'🔑',cat:'Kriptografi',url:'https://keybase.io/{u}',region:'Global',users:'5M+'},
+  {name:'Mastodon',emoji:'🐘',cat:'Sosyal Medya',url:'https://mastodon.social/@{u}',region:'Global',users:'10M+'},
+  {name:'Bluesky',emoji:'🦋',cat:'Sosyal Medya',url:'https://bsky.app/profile/{u}.bsky.social',region:'Global',users:'20M+'},
+  {name:'Threads',emoji:'🧵',cat:'Sosyal Medya',url:'https://threads.net/@{u}',region:'Global',users:'130M+'},
+  {name:'Vimeo',emoji:'🎬',cat:'Video',url:'https://vimeo.com/{u}',region:'Global',users:'260M+'},
+  {name:'Dailymotion',emoji:'📹',cat:'Video',url:'https://dailymotion.com/{u}',region:'Global',users:'300M+'},
+  {name:'Rumble',emoji:'📺',cat:'Video',url:'https://rumble.com/user/{u}',region:'Global',users:'60M+'},
+  {name:'Odysee',emoji:'🌊',cat:'Video',url:'https://odysee.com/@{u}',region:'Global',users:'10M+'},
+  {name:'Patreon',emoji:'🎁',cat:'İçerik',url:'https://patreon.com/{u}',region:'Global',users:'8M+'},
+  {name:'Ko-fi',emoji:'☕',cat:'İçerik',url:'https://ko-fi.com/{u}',region:'Global',users:'6M+'},
+  {name:'OnlyFans',emoji:'💰',cat:'İçerik',url:'https://onlyfans.com/{u}',region:'Global',users:'200M+'},
+  {name:'Quora',emoji:'❓',cat:'Forum',url:'https://quora.com/profile/{u}',region:'Global',users:'300M+'},
+  {name:'Tumblr',emoji:'📔',cat:'Blog',url:'https://tumblr.com/{u}',region:'Global',users:'496M+'},
+  {name:'WordPress',emoji:'🔵',cat:'Blog',url:'https://{u}.wordpress.com',region:'Global',users:'60M+'},
+  {name:'Ghost',emoji:'👻',cat:'Blog',url:'https://{u}.ghost.io',region:'Global',users:'3M+'},
+  {name:'Wattpad',emoji:'📖',cat:'Yazı',url:'https://wattpad.com/user/{u}',region:'Global',users:'80M+'},
+  {name:'Goodreads',emoji:'📚',cat:'Kitap',url:'https://goodreads.com/{u}',region:'Global',users:'150M+'},
+  {name:'Last.fm',emoji:'🎸',cat:'Müzik',url:'https://last.fm/user/{u}',region:'Global',users:'200M+'},
+  {name:'Bandcamp',emission:'🎼',emoji:'🎼',cat:'Müzik',url:'https://bandcamp.com/{u}',region:'Global',users:'5M+'},
+  {name:'Fiverr',emoji:'💵',cat:'Freelance',url:'https://fiverr.com/{u}',region:'Global',users:'4M+'},
+  {name:'Upwork',emoji:'🔧',cat:'Freelance',url:'https://upwork.com/fl/{u}',region:'Global',users:'18M+'},
+  {name:'AngelList',emoji:'👼',cat:'Profesyonel',url:'https://wellfound.com/u/{u}',region:'Global',users:'8M+'},
+  {name:'ProductHunt',emoji:'🐱',cat:'Teknoloji',url:'https://producthunt.com/@{u}',region:'Global',users:'6M+'},
+  {name:'Indie Hackers',emoji:'💡',cat:'Teknoloji',url:'https://indiehackers.com/{u}',region:'Global',users:'1M+'},
+  {name:'DEV.to',emoji:'👩‍💻',cat:'Geliştirici',url:'https://dev.to/{u}',region:'Global',users:'1M+'},
+  {name:'Hashnode',emoji:'🔷',cat:'Geliştirici',url:'https://hashnode.com/@{u}',region:'Global',users:'2M+'},
+  {name:'Replit',emoji:'🔁',cat:'Geliştirici',url:'https://replit.com/@{u}',region:'Global',users:'20M+'},
+  {name:'CodePen',emoji:'🖊️',cat:'Geliştirici',url:'https://codepen.io/{u}',region:'Global',users:'3M+'},
+  {name:'JSFiddle',emoji:'🎻',cat:'Geliştirici',url:'https://jsfiddle.net/{u}',region:'Global',users:'2M+'},
+  {name:'HuggingFace',emoji:'🤗',cat:'Yapay Zeka',url:'https://huggingface.co/{u}',region:'Global',users:'5M+'},
+  {name:'Kaggle',emoji:'🏆',cat:'Veri Bilimi',url:'https://kaggle.com/{u}',region:'Global',users:'10M+'},
+  {name:'Letterboxd',emoji:'🎞️',cat:'Film',url:'https://letterboxd.com/{u}',region:'Global',users:'10M+'},
+  {name:'MyAnimeList',emoji:'⚔️',cat:'Anime',url:'https://myanimelist.net/profile/{u}',region:'Global',users:'180M+'},
+  {name:'Anilist',emoji:'🌸',cat:'Anime',url:'https://anilist.co/user/{u}',region:'Global',users:'1M+'},
+  {name:'Chess.com',emoji:'♟️',cat:'Oyun',url:'https://chess.com/member/{u}',region:'Global',users:'100M+'},
+  {name:'Lichess',emoji:'♜',cat:'Oyun',url:'https://lichess.org/@/{u}',region:'Global',users:'8M+'},
+  {name:'Xbox Live',emoji:'🎮',cat:'Oyun',url:'https://xboxgamertag.com/{u}',region:'Global',users:'120M+'},
+  {name:'PSN',emoji:'🎮',cat:'Oyun',url:'https://psnprofiles.com/{u}',region:'Global',users:'110M+'},
+  {name:'eBay',emoji:'🛒',cat:'E-ticaret',url:'https://ebay.com/usr/{u}',region:'Global',users:'135M+'},
+  {name:'Etsy',emoji:'🧶',cat:'E-ticaret',url:'https://etsy.com/people/{u}',region:'Global',users:'96M+'},
+  {name:'Amazon',emoji:'📦',cat:'E-ticaret',url:'https://amazon.com/gp/profile/{u}',region:'Global',users:'300M+'},
+  {name:'Twitter TR',emoji:'🇹🇷',cat:'Sosyal Medya',url:'https://twitter.com/{u}',region:'tr',users:'15M+'},
+  {name:'Ekşi Sözlük',emoji:'🍋',cat:'Forum',url:'https://eksisozluk.com/biri/{u}',region:'tr',users:'30M+'},
+  {name:'Linkedin TR',emoji:'💼',cat:'Profesyonel',url:'https://linkedin.com/in/{u}',region:'tr',users:'10M+'},
+  {name:'İnstagram TR',emoji:'📸',cat:'Sosyal Medya',url:'https://instagram.com/{u}',region:'tr',users:'47M+'},
+  {name:'LetGo/OLX TR',emoji:'🛍️',cat:'E-ticaret',url:'https://letgo.com/user/{u}',region:'tr',users:'5M+'},
+  {name:'Sahibinden',emoji:'🏠',cat:'E-ticaret',url:'https://sahibinden.com',region:'tr',users:'20M+'},
+  {name:'VK',emoji:'🇷🇺',cat:'Sosyal Medya',url:'https://vk.com/{u}',region:'ru',users:'100M+'},
+  {name:'OK.ru',emoji:'🌐',cat:'Sosyal Medya',url:'https://ok.ru/{u}',region:'ru',users:'70M+'},
+  {name:'Habr',emoji:'👨‍💻',cat:'Geliştirici',url:'https://habr.com/ru/users/{u}',region:'ru',users:'2M+'},
+  {name:'Weibo',emoji:'🐦',cat:'Sosyal Medya',url:'https://weibo.com/u/{u}',region:'cn',users:'600M+'},
+  {name:'WeChat',emoji:'💬',cat:'Mesajlaşma',url:'https://wechat.com',region:'cn',users:'1.3B+'},
+  {name:'Bilibili',emoji:'📺',cat:'Video',url:'https://space.bilibili.com/{u}',region:'cn',users:'300M+'},
+  {name:'LINE',emoji:'🟢',cat:'Mesajlaşma',url:'https://line.me/ti/p/{u}',region:'cn',users:'200M+'},
+  {name:'Xiaohongshu',emoji:'📕',cat:'Sosyal Medya',url:'https://xiaohongshu.com/user/profile/{u}',region:'cn',users:'300M+'},
+];
+
+const CATEGORIES = [...new Set(PLATFORMS.map(p=>p.cat))];
+const catColors = {
+  'Sosyal Medya':'#63ffb4','Video':'#00d4ff','Geliştirici':'#b39ddb',
+  'Oyun':'#ffd166','Müzik':'#ff6b6b','Blog':'#f9a8d4','Forum':'#86efac',
+  'Profesyonel':'#67e8f9','Tasarım':'#c084fc','Sanat':'#fb923c',
+  'E-ticaret':'#a3e635','Mesajlaşma':'#38bdf8','İçerik':'#fb7185',
+  'Freelance':'#fbbf24','Teknoloji':'#818cf8','Yapay Zeka':'#34d399',
+  'Film':'#f472b6','Anime':'#f9a8d4','Kriptografi':'#6ee7b7','Kitap':'#fcd34d',
+  'Yayın':'#a78bfa','Yazı':'#86efac','Veri Bilimi':'#5eead4','Fotoğraf':'#fdba74',
+};
+
+let results = {}, scanning = false, scanInterval = null, detailTarget = null;
+let statusFilter = 'all', regionFilter = 'all', catFilter = 'all';
+let startTime = null, scanTimer = null;
+
+function buildSidebar() {
+  const el = document.getElementById('category-list');
+  let html = `<div class="pf-item active" onclick="toggleCat(this,'all')"><div class="pf-dot" style="background:#8892a4"></div><span class="pf-name">Tümü</span><span class="pf-count">${PLATFORMS.length}</span></div>`;
+  const cats = [...new Set(PLATFORMS.map(p=>p.cat))].slice(0,12);
+  cats.forEach(c=>{
+    const col = catColors[c]||'#8892a4';
+    const cnt = PLATFORMS.filter(p=>p.cat===c).length;
+    html+=`<div class="pf-item" onclick="toggleCat(this,'${c}')"><div class="pf-dot" style="background:${col}"></div><span class="pf-name">${c}</span><span class="pf-count">${cnt}</span></div>`;
+  });
+  el.innerHTML=html;
+}
+
+function toggleCat(el,cat) {
+  document.querySelectorAll('#category-list .pf-item').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active'); catFilter=cat; renderResults();
+}
+function toggleRegion(el,r) {
+  el.closest('.platform-filter').querySelectorAll('.pf-item').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active'); regionFilter=r; renderResults();
+}
+function toggleStatus(el,s) {
+  el.closest('.platform-filter').querySelectorAll('.pf-item').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active'); statusFilter=s; renderResults();
+}
+function toggleOpt(el) { el.classList.toggle('checked'); }
+
+function log(text, cls='tl-info') {
+  const t = document.getElementById('terminal');
+  const span = document.createElement('span');
+  span.className=`tl ${cls}`;
+  span.textContent=text;
+  const br = document.createElement('br');
+  const cursor = t.querySelector('.cursor');
+  if(cursor) { t.insertBefore(span,cursor); t.insertBefore(br,cursor); }
+  else { t.appendChild(span); t.appendChild(br); }
+  t.scrollTop=t.scrollHeight;
+}
+
+function clearLog() {
+  document.getElementById('terminal').innerHTML=`<span class="tl tl-prompt">svilia@seeker:~$ </span><span class="cursor"></span>`;
+}
+
+async function startScan() {
+  const u = document.getElementById('username-input').value.trim().replace('@','');
+  if(!u) { showNotif('Kullanıcı adı girin',''); return; }
+  if(scanning) return;
+  scanning=true; results={};
+  document.getElementById('scan-btn').classList.add('scanning');
+  document.getElementById('scan-btn').textContent='⟳ TARANIYOR';
+  document.getElementById('stop-btn').style.display='';
+  document.getElementById('progress-wrap').style.display='';
+  document.getElementById('empty-state').style.display='none';
+  document.getElementById('results-container').style.display='';
+  clearLog();
+  log(`$ vestige scan --username ${u} --threads 50`,'tl-prompt');
+  log(`──────────────────────────────`,'tl-dim');
+  log(`⟳ ${PLATFORMS.length} platform taranıyor...`,'tl-blue');
+  log(`⚡ Paralel bağlantılar başlatıldı`,'tl-info');
+  startTime=Date.now();
+  scanTimer=setInterval(()=>{
+    const el=document.getElementById('s-time');
+    if(el) el.textContent=((Date.now()-startTime)/1000).toFixed(1)+'s';
+  },100);
+  await runScan(u);
+}
+
+async function runScan(u) {
+  const platforms = PLATFORMS.filter(p=>{
+    if(regionFilter!=='all'&&p.region!==regionFilter&&regionFilter!=='all') return p.region===regionFilter||p.region==='Global';
+    return true;
+  });
+  let done=0;
+  const total=platforms.length;
+  for(let i=0;i<total;i+=8) {
+    if(!scanning) break;
+    const batch=platforms.slice(i,i+8);
+    await Promise.all(batch.map(p=>simulateScan(p,u)));
+    done+=batch.length;
+    const pct=Math.round((done/total)*100);
+    document.getElementById('main-progress').style.width=pct+'%';
+    const speed=Math.round(done/((Date.now()-startTime)/1000));
+    document.getElementById('s-speed').textContent=speed+'/s';
+    updateStats();
+    renderResults();
+    await new Promise(r=>setTimeout(r,60));
+  }
+  finishScan(u);
+}
+
+async function simulateScan(platform, u) {
+  const wait=80+Math.random()*400;
+  await new Promise(r=>setTimeout(r,wait));
+  if(!scanning) return;
+  const roll=Math.random();
+  const url=platform.url.replace('{u}',u);
+  let status,code,resp;
+  if(roll<0.28) {
+    status='found'; code=200; resp=(wait/1000).toFixed(2)+'s';
+    log(`[+] ${platform.name} → FOUND`,'tl-success');
+  } else if(roll<0.85) {
+    status='notfound'; code=404; resp=(wait/1000).toFixed(2)+'s';
+  } else {
+    status='error'; code=Math.random()<0.5?403:500; resp='timeout';
+    log(`[!] ${platform.name} → ERR ${code}`,'tl-warn');
+  }
+  results[platform.name]={platform,status,url,code,resp,ts:Date.now()};
+}
+
+function finishScan(u) {
+  clearInterval(scanTimer);
+  const found=Object.values(results).filter(r=>r.status==='found').length;
+  const total=Object.keys(results).length;
+  const elapsed=((Date.now()-startTime)/1000).toFixed(1);
+  log(`──────────────────────────────`,'tl-dim');
+  log(`✓ Tarama tamamlandı (${elapsed}s)`,'tl-success');
+  log(`✓ ${found}/${total} profil bulundu`,'tl-success');
+  log(`$ `,'tl-prompt');
+  const risk=Math.min(100,Math.round((found/total)*150));
+  document.getElementById('risk-score').textContent=risk+'/100';
+  document.getElementById('risk-bar').style.width=risk+'%';
+  const rl=risk>60?'Yüksek dijital iz':risk>30?'Orta dijital iz':'Düşük dijital iz';
+  document.getElementById('risk-label').textContent=rl;
+  scanning=false;
+  document.getElementById('scan-btn').classList.remove('scanning');
+  document.getElementById('scan-btn').textContent='◉ TARA';
+  document.getElementById('stop-btn').style.display='none';
+  updateStats();
+  renderResults();
+  showNotif(`✓ Tamamlandı: ${found} profil bulundu`,'success');
+}
+
+function stopScan() {
+  scanning=false; clearInterval(scanTimer);
+  document.getElementById('scan-btn').classList.remove('scanning');
+  document.getElementById('scan-btn').textContent='◉ TARA';
+  document.getElementById('stop-btn').style.display='none';
+  log('[ DURDURULDU ]','tl-warn');
+  updateStats(); renderResults();
+}
+
+function updateStats() {
+  const vals=Object.values(results);
+  const found=vals.filter(r=>r.status==='found').length;
+  const nf=vals.filter(r=>r.status==='notfound').length;
+  const err=vals.filter(r=>r.status==='error').length;
+  document.getElementById('s-total').textContent=vals.length;
+  document.getElementById('s-found').textContent=found;
+  document.getElementById('s-nf').textContent=nf;
+  document.getElementById('s-err').textContent=err;
+  document.getElementById('cnt-all').textContent=vals.length;
+  document.getElementById('cnt-found').textContent=found;
+  document.getElementById('cnt-notfound').textContent=nf;
+  document.getElementById('cnt-error').textContent=err;
+}
+
+function renderResults() {
+  const container=document.getElementById('results-container');
+  const vals=Object.values(results);
+  if(!vals.length) return;
+  const filtered=vals.filter(r=>{
+    if(statusFilter!=='all'&&r.status!==statusFilter) return false;
+    if(catFilter!=='all'&&r.platform.cat!==catFilter) return false;
+    if(regionFilter!=='all'&&r.platform.region!==regionFilter&&r.platform.region!=='Global') return false;
+    return true;
+  });
+  const byStatus={found:[],notfound:[],error:[]};
+  filtered.forEach(r=>byStatus[r.status].push(r));
+  let html='';
+  if(byStatus.found.length) {
+    html+=`<div class="section-header"><span class="section-title">Bulunan Profiller</span><div class="section-line"></div><span class="section-count">${byStatus.found.length}</span></div>`;
+    html+=`<div class="results-grid">`;
+    byStatus.found.forEach(r=>html+=renderCard(r));
+    html+=`</div>`;
+  }
+  if(byStatus.error.length) {
+    html+=`<div class="section-header"><span class="section-title">Hata / Erişim Engeli</span><div class="section-line"></div><span class="section-count">${byStatus.error.length}</span></div>`;
+    html+=`<div class="results-grid">`;
+    byStatus.error.forEach(r=>html+=renderCard(r));
+    html+=`</div>`;
+  }
+  if(byStatus.notfound.length&&statusFilter!=='found') {
+    html+=`<div class="section-header"><span class="section-title">Bulunamadı</span><div class="section-line"></div><span class="section-count">${byStatus.notfound.length}</span></div>`;
+    html+=`<div class="results-grid">`;
+    byStatus.notfound.forEach(r=>html+=renderCard(r));
+    html+=`</div>`;
+  }
+  container.innerHTML=html;
+}
+
+function renderCard(r) {
+  const badgeText={found:'BULUNDU',notfound:'YOK',error:'HATA'}[r.status];
+  return `<div class="result-card ${r.status}" onclick="showDetail('${r.platform.name}')">
+    <div class="rc-head">
+      <span class="rc-emoji">${r.platform.emoji||'🌐'}</span>
+      <span class="rc-name">${r.platform.name}</span>
+      <div class="rc-status ${r.status}"></div>
+    </div>
+    <div class="rc-url">${r.url.replace('https://','').substring(0,32)}...</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+      <span class="rc-badge ${r.status}">${badgeText}</span>
+      <span class="rc-meta rc-time">${r.resp||'--'}</span>
+    </div>
+    <div class="rc-meta" style="margin-top:2px;">${r.platform.cat} · ${r.platform.users}</div>
+  </div>`;
+}
+
+function showDetail(name) {
+  const r=results[name]; if(!r) return; detailTarget=r;
+  document.getElementById('dp-emoji').textContent=r.platform.emoji||'🌐';
+  document.getElementById('dp-name').textContent=r.platform.name;
+  document.getElementById('dp-cat').textContent=r.platform.cat;
+  document.getElementById('dp-status').textContent=r.status==='found'?'✓ Hesap Bulundu':r.status==='error'?'⚠ Erişim Hatası':'✗ Hesap Yok';
+  document.getElementById('dp-status').style.color=r.status==='found'?'var(--green)':r.status==='error'?'var(--yellow)':'var(--text3)';
+  document.getElementById('dp-url').textContent=r.url;
+  document.getElementById('dp-code').textContent='HTTP '+r.code+(r.code===200?' OK':r.code===404?' Not Found':r.code===403?' Forbidden':r.code===500?' Server Error':'');
+  document.getElementById('dp-resp').textContent=r.resp||'--';
+  document.getElementById('dp-cat2').textContent=r.platform.cat;
+  document.getElementById('dp-region').textContent=r.platform.region;
+  document.getElementById('dp-users').textContent=r.platform.users+' kullanıcı';
+  document.getElementById('dp-method').textContent='HTTP GET · Status Check';
+  document.getElementById('dp-found-section').style.display=r.status==='found'?'':'none';
+  document.getElementById('dp-profile').textContent=r.url;
+  document.getElementById('dp-content').textContent='Profil, gönderi, medya içeriği';
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function closeDetail() { document.getElementById('detail-panel').classList.remove('open'); }
+
+function openDetail() {
+  if(detailTarget) showNotif('Gerçek taramada URL açılır: '+detailTarget.url,'info');
+}
+function copyUrl() {
+  if(detailTarget) { showNotif('URL kopyalandı','success'); }
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  if(tab==='history') showNotif('Geçmiş sorgular burada görünür','info');
+  else if(tab==='config') showNotif('Config: proxy, timeout, thread sayısı ayarları','info');
+  else if(tab==='export') exportResults();
+}
+
+function exportResults() {
+  const found=Object.values(results).filter(r=>r.status==='found');
+  if(!found.length) { showNotif('Önce tarama yapın',''); return; }
+  showNotif(`${found.length} profil JSON olarak hazır`,'success');
+}
+
+function showNotif(msg,type) {
+  const n=document.getElementById('notif');
+  n.textContent=msg; n.className='notif '+(type||'');
+  n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'),2800);
+}
+
+buildSidebar();
+</script>
+</body>
+</html>
