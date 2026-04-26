@@ -15,6 +15,15 @@
 2. Open the file in any modern web browser (Chrome, Brave, Firefox, etc.).
 3. Enter the username you want to search and hit the "Search" button.
 
+4. ## 💻 Built With
+The entire project is built using:
+
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
+
+---
+
 ## ⚠️ Important Note (CORS)
 Due to browser security policies (**CORS**), direct requests to some platforms may be blocked. To ensure full functionality, it is recommended to use a **CORS Unblock** browser extension or a proxy service.
 
