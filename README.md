@@ -21,6 +21,13 @@ Due to browser security policies (**CORS**), direct requests to some platforms m
 ## 📜 License
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
+## 🤝 Contributors
+
+A special thanks to those who helped develop this project:
+
+| [<img src="https://github.com/wortex213433.png?size=100" width=100><br><sub>**Arkadaşının Adı**</sub>](https://github.com/ARKADASININ_KULLANICI_ADI) |
+| :---: |
+
 ---
 **Developed by:** [Emir Svilia](https://github.com/svilia)  
 *For educational and security research purposes only.*
