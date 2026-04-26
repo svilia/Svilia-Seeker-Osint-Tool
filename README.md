@@ -15,13 +15,6 @@
 2. Open the file in any modern web browser (Chrome, Brave, Firefox, etc.).
 3. Enter the username you want to search and hit the "Search" button.
 
-4. ## 💻 Built With
-The entire project is built using:
-
-![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
-
 ---
 
 ## ⚠️ Important Note (CORS)
@@ -30,13 +23,21 @@ Due to browser security policies (**CORS**), direct requests to some platforms m
 ## 📜 License
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
+## 💻 Built With
+The entire project is built using:
+
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
+
+---
+
 ## 🤝 Contributors
 
-A special thanks to those who helped develop this project:
+A special thanks to the team behind this project:
 
-| [<img src="https://github.com/wortex213433.png?size=100" width=100><br><sub>**Wortex**</sub>](https://github.com/ARKADASININ_KULLANICI_ADI) |
-| :---: |
-
+| [<img src="https://github.com/svilia.png?size=100" width=100><br><sub>**svilia**</sub>](https://github.com/svilia) | [<img src="https://github.com/wortex213433.png?size=100" width=100><br><sub>**wortex213433**</sub>](https://github.com/wortex213433) |
+| :---: | :---: |
 ---
 **Developed by:** [Emir Svilia](https://github.com/svilia)  
 *For educational and security research purposes only.*
