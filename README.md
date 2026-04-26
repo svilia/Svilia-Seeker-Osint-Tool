@@ -25,7 +25,7 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 A special thanks to those who helped develop this project:
 
-| [<img src="https://github.com/wortex213433.png?size=100" width=100><br><sub>**Arkadaşının Adı**</sub>](https://github.com/ARKADASININ_KULLANICI_ADI) |
+| [<img src="https://github.com/wortex213433.png?size=100" width=100><br><sub>**Wortex**</sub>](https://github.com/ARKADASININ_KULLANICI_ADI) |
 | :---: |
 
 ---
